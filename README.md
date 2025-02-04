@@ -1,4 +1,4 @@
-﻿me
+![WSMicon](https://github.com/user-attachments/assets/f7eb57a7-ffbd-4005-ac26-e49292ae27fe)
 # Word Scroll Machine
 
 WSM là phần mềm dùng để hiển thị cho máy đọc chữ, với 1 cửa sổ của người điều khiển và 1 cửa sổ dành cho người đọc
