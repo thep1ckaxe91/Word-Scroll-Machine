@@ -44,6 +44,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>true</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -51,6 +52,7 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>true</EnableASAN>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -100,13 +102,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\SFML-3.0.0\include;$(SolutionDir)\ImGUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -117,7 +120,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -126,6 +129,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)\ImGUI;$(SolutionDir)\SFML-3.0.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,17 +142,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="ImGUI\backends\imgui_impl_opengl2.cpp" />
+    <ClCompile Include="ImGUI\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="ImGUI\imgui-SFML.cpp" />
     <ClCompile Include="ImGUI\imgui.cpp" />
     <ClCompile Include="ImGUI\imgui_draw.cpp" />
     <ClCompile Include="ImGUI\imgui_tables.cpp" />
     <ClCompile Include="ImGUI\imgui_widgets.cpp" />
+    <ClCompile Include="ImGUI\misc\cpp\imgui_stdlib.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="WrapText.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.hpp" />
     <ClInclude Include="config.hpp" />
+    <ClInclude Include="ImGUI\backends\imgui_impl_opengl2.h" />
+    <ClInclude Include="ImGUI\backends\imgui_impl_opengl3.h" />
+    <ClInclude Include="ImGUI\backends\imgui_impl_sdl2.h" />
     <ClInclude Include="ImGUI\imconfig-SFML.h" />
     <ClInclude Include="ImGUI\imconfig.h" />
     <ClInclude Include="ImGUI\imgui-SFML.h" />
@@ -158,6 +169,7 @@
     <ClInclude Include="ImGUI\imstb_rectpack.h" />
     <ClInclude Include="ImGUI\imstb_textedit.h" />
     <ClInclude Include="ImGUI\imstb_truetype.h" />
+    <ClInclude Include="ImGUI\misc\cpp\imgui_stdlib.h" />
     <ClInclude Include="Logger.hpp" />
     <ClInclude Include="SFML-3.0.0\include\SFML\Audio.hpp" />
     <ClInclude Include="SFML-3.0.0\include\SFML\Audio\AudioResource.hpp" />
@@ -260,8 +272,10 @@
     <ClInclude Include="SFML-3.0.0\include\SFML\Window\WindowBase.hpp" />
     <ClInclude Include="SFML-3.0.0\include\SFML\Window\WindowEnums.hpp" />
     <ClInclude Include="SFML-3.0.0\include\SFML\Window\WindowHandle.hpp" />
+    <ClInclude Include="WrapText.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="README.md" />
     <None Include="SFML-3.0.0\bin\sfml-audio-3.dll" />
     <None Include="SFML-3.0.0\bin\sfml-audio-d-3.dll" />
     <None Include="SFML-3.0.0\bin\sfml-graphics-3.dll" />
@@ -295,6 +309,9 @@
     <None Include="sfml-system-d-3.dll" />
     <None Include="sfml-window-3.dll" />
     <None Include="sfml-window-d-3.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="log.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

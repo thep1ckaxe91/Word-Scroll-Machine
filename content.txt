@@ -1,0 +1,95 @@
+Chào mừng đến với SFML 3! Nhóm SFML đã nỗ lực rất nhiều để cung cấp một thư viện vừa quen thuộc với người dùng hiện tại vừa thực hiện những cải tiến đáng kể. Tài liệu này sẽ hướng dẫn bạn cách nâng cấp ứng dụng SFML 2 của mình lên SFML 3.
+
+Một trong những thay đổi chính trong SFML 3 là nâng chuẩn C++ lên C++17, do đó đưa SFML vào thế giới C++ hiện đại! Thay đổi này đã cho phép thực hiện rất nhiều cải tiến nội bộ cũng như các cơ hội mới để cải thiện API sẽ được thảo luận trong tài liệu này.
+
+Yêu cầu về trình biên dịch
+Cùng với việc nâng cấp từ C++03 lên C++17, bạn có thể cần nâng cấp trình biên dịch của mình. Hỗ trợ C++17 đã được phổ biến rộng rãi trong tất cả các triển khai trình biên dịch chính trong nhiều năm trước khi SFML 3 được phát hành, vì vậy rất có thể trình biên dịch bạn đang sử dụng sẽ hoạt động. Trong trường hợp bạn cần nâng cấp, sau đây là các phiên bản trình biên dịch tối thiểu.
+
+Phiên bản trình biên dịch
+MSVC 16 (VS 2019)
+GCC 9
+Clang 9
+AppleClang 12
+Mục tiêu CMake
+SFML 3 sử dụng quy ước CMake hiện đại cho các mục tiêu thư viện đòi hỏi phải có một không gian tên ở phía trước tên mục tiêu. Các không gian tên này cho CMake biết "đây là mục tiêu" trong khi một cái gì đó như sfml-graphics có thể là một mục tiêu hoặc có thể là một thư viện được biên dịch trước trên đĩa như libsfml-graphics.so. Việc khắc phục sự mơ hồ này dẫn đến các thông báo lỗi hữu ích hơn khi không thể tìm thấy mục tiêu nhất định do, ví dụ, quên lệnh gọi find_package. Tên thành phần được sử dụng khi gọi find_package cũng đã được thay đổi để viết hoa chữ cái đầu tiên.
+
+v2 Target v3 Target
+sfml-system SFML::System
+sfml-window SFML::Window
+sfml-graphics SFML::Graphics
+sfml-network SFML::Network
+sfml-audio SFML::Audio
+sfml-main SFML::Main
+v2 Component v3 Component
+system System
+window Window
+graphics Graphics
+network Network
+audio Audio
+main Main
+v2:
+
+find_package(SFML 2 REQUIRED COMPONENTS graphics audio network)
+...
+target_link_libraries(my_app PRIVATE sfml-graphics sfml-audio sfml-network)
+v3:
+
+find_package(SFML 3 REQUIRED COMPONENTS Graphics Audio Network)
+...
+target_link_libraries(my_app PRIVATE SFML::Graphics SFML::Audio SFML::Network)
+Linux Dependencies
+Khi sử dụng X11 là backend trên Linux, trái ngược với DRM, libxi-dev là một phụ thuộc mới bắt buộc. Điều này được giới thiệu với hỗ trợ đầu vào chuột thô.
+
+Tham số sf::Vector2<T>
+Một mô hình phổ biến trong SFML 2 là sử dụng các cặp tham số vô hướng để biểu diễn các khái niệm như kích thước hoặc vị trí. Lấy sf::Transformable::setPosition(float, float) làm ví dụ. Hai tham số kết hợp để biểu diễn một vị trí trong không gian thế giới.
+
+SFML 3 lấy tất cả các API có cặp tham số như (float, float) hoặc (unsigned int, unsigned int) và chuyển đổi chúng thành kiểu sf::Vector2<T> tương ứng của chúng như sf::Vector2f hoặc sf::Vector2u để làm cho giao diện biểu cảm hơn và có thể ghép lại được. Quá trình chuyển đổi này thường đơn giản như việc bao bọc hai tham số liền kề bằng dấu ngoặc nhọn để tạo vectơ.
+
+v2:
+
+sf::VideoMode videoMode(480, 640, 24);
+sf::CircleShape circle(10);
+circle.setPosition(10, 20);
+sf::IntRect rect(250, 400, 50, 100);
+v3:
+
+sf::VideoMode videoMode({480, 640}, 24);
+sf::CircleShape circle(10);
+circle.setPosition({10, 20});
+sf::IntRect rect({250, 400}, {50, 100});
+Số nguyên có độ rộng cố định
+SFML 2 chứa nhiều typedef khác nhau cho số nguyên có độ rộng cố định. Những typedef đó hiện được thay thế bằng số nguyên có độ rộng cố định được cung cấp trong tiêu đề <cstdint> từ thư viện chuẩn.
+
+v2 v3
+sf::Int8 std::int8_t
+sf::Uint8 std::uint8_t
+sf::Int16 std::int16_t
+sf::Uint16 std::uint16_t
+sf::Int32 std::int32_t
+sf::Uint32 std::uint32_t
+sf::Int64 std::int64_t
+sf::Uint64 std::uint64_t
+sf::Event
+SFML 3 sử dụng std::variant để triển khai một API hoàn toàn mới, an toàn về kiểu cho các sự kiện. Có hai cách chính để sử dụng API mới này. Hãy xem chương trình ví dụ EventHandling mới để xem các phương pháp này trong thực tế.
+
+sf::Event::getIf<T>
+Tùy chọn đầu tiên dựa trên sf::Event::getIf<T> và sf::Event::is<T>. getIf<T> hoạt động bằng cách cung cấp tham số mẫu phải là một kiểu sự kiện con. Kiểu sự kiện con là các kiểu như sf::Event::Resized hoặc sf::Event::MouseMoved. Nếu đối số mẫu khớp với kiểu sự kiện con đang hoạt động thì một con trỏ đến dữ liệu sẽ được trả về. Nếu đối số mẫu đó không phải là kiểu sự kiện con đang hoạt động thì nullptr sẽ được trả về. sf::Event::is<T> đơn giản hơn là trả về true nếu T khớp với kiểu sự kiện con đang hoạt động. is<T> thường được sử dụng cho các kiểu con như sf::Event::Closed không chứa dữ liệu. Đây là giao diện của nó:
+
+while (window.isOpen())
+{
+while (const std::optional event = window.pollEvent())
+{
+if (event->is<sf::Event::Closed>())
+{
+window.close();
+}
+else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+{
+if (keyPressed->scancode == sf::Keyboard::Scancode::Escape)
+window.close();
+}
+}
+
+// Phần còn lại của vòng lặp chính
+}
+Lưu ý cách API để lấy sự kiện đã thay đổi một chút. sf::WindowBase::pollEvent và sf::WindowBase::waitEvent hiện trả về std::optional<sf::Event>
