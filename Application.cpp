@@ -19,44 +19,6 @@
 
 namespace fs = std::filesystem;
 using Key = sf::Keyboard::Key;
-/*
-Problem and Solution:
-Problem:
-1. Content is way too big to just put in single Texture
-2. How do we track the current displaying content?
-3. How do we handle overflow in y-axis?
-4. Behaviour when scrolling to the end?
-5. How do we handle the text wrap?
-
-Solution:
-1. Use 2 Screen size Texture, loop like background
-2.
-3. get the amount of line that can be displayed on the screen base on the rendered text height and line spacing
-display the top most line of 1 texture 1/2 line spacing from the top,
-and the bottom most line of the texture 1/2 line spacing from the bottom
-4. When scrolling to the end, automatically display --The End--
-5. Create my own wrapable text, base on given maximum length => Single Responsibility Principle
-
-
-Note:
-chia sẻ nhỏ, tránh thu hút
-cái j cũng phải có dấu chứng
-biểu tình ng da đen, cảnh sát đè ng da đen, pv người da đen tên j? => ko bt
-==>
-
-Tại sao lại cần ví dụ vòng vo thế?
-
-Ví dụ về tổ ong, 1 con ong không mạnh, nhiều con ong thì mạnh
-==> Về việc phân tích đúng ý tác giả
-==> Để ng dân hiểu, nhưng kẻ thù thì không hiểu
-
-
-Chỉ ra sự ứng nghiệm cụ thể, không chỉ là 1 hoặc 2 cái, nhưng rất nhiều và chi tiết
-
-Cải cách:
-
-*/
-
 
 Application::Application()
 {
@@ -67,15 +29,14 @@ Application::Application()
 	settings.attributeFlags = sf::ContextSettings::Default;
 	settings.antiAliasingLevel = 8;
 	try {
-		scrollerWindow = sf::RenderWindow(sf::VideoMode(sf::Vector2u(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT)), "Scroller Window",sf::Style::Close | sf::Style::Titlebar, sf::State::Windowed, settings);
+		scrollerWindow = sf::RenderWindow(sf::VideoMode(sf::Vector2u(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT)), "Scroller Window - Press F1 to toggle Control", sf::Style::Close | sf::Style::Titlebar, sf::State::Windowed, settings);
 		readerWindow = sf::RenderWindow(sf::VideoMode(sf::Vector2u(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT)), "Reader Window", sf::Style::Resize | sf::Style::Close, sf::State::Windowed, settings);
 	}
 	catch (std::exception e)
 	{
 		Logger::log(e.what(), Logger::HIGH);
 	}
-	readerViewSize = readerWindow.getSize();
-	baseContentCenterPosition = { readerViewSize.x / 2.f, 0 };
+	baseContentCenterPosition = { readerWindow.getSize().x / 2.f, 0 };
 
 	scrollerWindow.setFramerateLimit(60);
 	readerWindow.setFramerateLimit(60);
@@ -92,7 +53,8 @@ Application::Application()
 	font.setSmooth(true);
 	fontSize = 72;
 
-	changeScreenSize(readerViewSize);
+	changeScreenSize(readerWindow.getSize());
+	readerSprite.setScale({ 1,-1 });
 
 	loadContent();
 }
@@ -210,22 +172,24 @@ void Application::displayGUI()
 		toUpdateTexture = true;
 	}
 
-	if (ImGui::Button("Flip X"))
-	{
-		readerSprite.scale({ -1,1 });
-	}
+	//if (ImGui::Button("Flip X"))
+	//{
+	//	readerSprite.scale({ -1,1 });
+	//}
 
-	if (ImGui::Button("Flip Y"))
-	{
-		readerSprite.scale({ 1,-1 });
-	}
+	//if (ImGui::Button("Flip Y"))
+	//{
+	//	readerSprite.scale({ 1,-1 });
+	//}
 
 	if (ImGui::Button("Rotate 90 cw"))
 	{
-		changeScreenSize(readerViewSize = { readerViewSize.y, readerViewSize.x });
+		changeScreenSize({ contentTexture.getSize().y, contentTexture.getSize().x });
 		readerSprite.rotate(sf::degrees(90));
 	}
 
+
+	ImGui::Text("Please inform if there're any problem, bug or feature B/S want to add!");
 	ImGui::End();
 
 }
@@ -241,11 +205,12 @@ void Application::onScrollerScroll(const sf::Event::MouseWheelScrolled* e)
 
 void Application::onReaderResize(const sf::Event::Resized* e)
 {
-	readerViewSize = e->size;
 
-	baseContentCenterPosition = { readerViewSize.x / 2.f, 0 };
+	baseContentCenterPosition = { readerWindow.getSize().x / 2.f, 0};
 
-	changeScreenSize(readerViewSize);
+	changeScreenSize(readerWindow.getSize());
+
+	readerSprite.setRotation(sf::degrees(0));
 }
 
 void Application::changeScreenSize(sf::Vector2u size)
@@ -262,17 +227,17 @@ void Application::changeScreenSize(sf::Vector2u size)
 	readerSprite.setOrigin({ size.x / 2.f , size.y / 2.f });
 	scrollerSprite.setOrigin({ size.x / 2.f , size.y / 2.f });
 
-	scrollerSprite.setPosition({ scrollerWindow.getSize().x/2.f, scrollerWindow.getSize().y/2.f });
-	readerSprite.setPosition({ readerWindow.getSize().x/2.f, readerWindow.getSize().y/2.f });
+	scrollerSprite.setPosition({ scrollerWindow.getSize().x / 2.f, scrollerWindow.getSize().y / 2.f });
+	readerSprite.setPosition({ readerWindow.getSize().x / 2.f, readerWindow.getSize().y / 2.f });
 	//FIXME: edit the scale of the scrollerSprite so that it fit in one of 2 screen dimension
 
 	float factor;
 	float readerRatio = size.x * 1.f / size.y;
 	float scrollerRatio = scrollerWindow.getSize().x * 1.f / scrollerWindow.getSize().y;
 	factor = scrollerRatio < readerRatio ?
-		scrollerWindow.getSize().x * 1.f / size.x 
+		scrollerWindow.getSize().x * 1.f / size.x
 		: scrollerWindow.getSize().y * 1.f / size.y;
-	scrollerSprite.setScale({factor, factor});
+	scrollerSprite.setScale({ factor, factor });
 
 	updateContentTexture();
 }
@@ -304,7 +269,7 @@ void Application::loadContent()
 		{
 			contentTexts.push_back(WrapText{ font, sf::String::fromUtf8(line.begin(), line.end()) + "\n",static_cast<unsigned int>(fontSize) });
 
-			contentTexts.back().setMaxLength(readerViewSize.x);
+			contentTexts.back().setMaxLength(contentTexture.getSize().x);
 			if (contentOffset.empty())
 			{
 				contentOffset.push_back(0);
@@ -313,9 +278,24 @@ void Application::loadContent()
 			{
 				contentOffset.push_back(contentOffset.back() + contentTexts[contentTexts.size() - 2].getLocalBounds().size.y);
 			}
-
 		}
+			
+		for (int i = 0; i < 3; i++)
+		{
+			if(i==0 || i==2)
+				contentTexts.push_back(WrapText{ font, "\n\n\n", static_cast<unsigned int>(fontSize) });
+			else
+				contentTexts.push_back(WrapText{ font, "--- The End ---", static_cast<unsigned int>(fontSize) });
 
+			if (contentOffset.empty())
+			{
+				contentOffset.push_back(0);
+			}
+			else
+			{
+				contentOffset.push_back(contentOffset.back() + contentTexts[contentTexts.size() - 2].getLocalBounds().size.y);
+			}
+		}
 		// add all starting index to currentIndexes
 		currentIndexes.clear();
 		if (currentIndexes.capacity() < contentTexts.size())
@@ -324,7 +304,7 @@ void Application::loadContent()
 
 		for (int i = 0; i < contentTexts.size(); i++)
 		{
-			if (contentOffset[i] < readerViewSize.y)
+			if (contentOffset[i] < contentTexture.getSize().y)
 			{
 				currentIndexes.push_back(i);
 			}
@@ -348,7 +328,7 @@ void Application::updateContentTexture()
 	for (auto& text : contentTexts)
 	{
 		text.setCharacterSize(fontSize);
-		text.setMaxLength(readerViewSize.x);
+		text.setMaxLength(contentTexture.getSize().x);
 	}
 
 	// update contentOffset according to the new contentTexts size
@@ -363,11 +343,17 @@ void Application::updateContentTexture()
 		}
 		else
 		{
+			assert(!contentOffset.empty());
 			contentOffset.push_back(contentOffset.back() + contentTexts[i - 1].getLocalBounds().size.y);
 		}
 	}
-	baseContentCenterPosition.y = 0;
-	baseContentCenterPosition.x = readerViewSize.x / 2.f;
+	if (!currentIndexes.empty())
+		baseContentCenterPosition.y = -contentOffset[currentIndexes.front()];
+	else
+		baseContentCenterPosition.y = 0;
+	baseContentCenterPosition.x = contentTexture.getSize().x / 2.f;
+
+
 	updateCurrentIndexes();
 }
 
@@ -377,7 +363,7 @@ void Application::updateContentTexture()
 void Application::updateCurrentIndexes()
 {
 	float upperBound = -baseContentCenterPosition.y;
-	float lowerBound = upperBound + readerViewSize.y;
+	float lowerBound = upperBound + contentTexture.getSize().y;
 	currentIndexes.clear();
 
 	if (currentIndexes.capacity() < contentTexts.size())

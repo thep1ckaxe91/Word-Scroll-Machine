@@ -49,7 +49,6 @@ private:
 	sf::Font font;
 	int fontSize;
 	sf::Vector2f baseContentCenterPosition; // top center for the content align with
-	sf::Vector2u readerViewSize;
 
 	float scrollMultiplier = 20;
 	float contentYPos = 0; // the current y position of the content, this shall decrease when we going over the content
