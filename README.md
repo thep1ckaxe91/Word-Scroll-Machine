@@ -23,4 +23,5 @@ Giải nén và mở **Word Scroll Machine.exe**
 - :floppy_disk: Bấm nút "Load Content" để tải nội dung từ file **content.txt** trong cùng thư mục với file exe
 - :scroll:  Chỉnh sửa tốc độ lăn bằng cách thay đổi **Scroll Speed**
 - :ab: Tăng giảm kích thước chữ bằng cách thay đổi **Font size**
+- :arrow_up_small: Lật góc nhìn của cửa sổ người đọc với 2 nút **Flip X** và **Flip Y**
 - :arrows_clockwise: Thay đổi hướng lăn với nút **Rotate 90 cw**
