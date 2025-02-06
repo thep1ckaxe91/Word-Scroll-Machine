@@ -15,12 +15,13 @@ Tải bản release mới nhất ở đây:
 ### Bước 2:
 Tải bản installer:
 
-![image](https://github.com/user-attachments/assets/9d041666-f01a-4127-b684-4334eb14f6fb)
 
 ![image](https://github.com/user-attachments/assets/987aa1c1-d59c-4e68-ad6e-915ce2c3e0fd)
 
 ### Bước 3:
 Làm theo các bước cài đặt và mở WSM trên Desktop
+
+![image](https://github.com/user-attachments/assets/c6d83ddd-9720-496f-8468-d858a76c0b23)
 
 ![image](https://github.com/user-attachments/assets/df1a2215-2f3b-4bbd-a290-693623375835)
 
