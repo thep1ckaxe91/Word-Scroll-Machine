@@ -9,18 +9,22 @@ WSM là phần mềm dùng để hiển thị cho máy đọc chữ, với 1 c�
 
 ### Bước 1:
 Tải bản release mới nhất ở đây:
-![File](file.png)
+
+![image](https://github.com/user-attachments/assets/2935ea00-5b68-4ac0-80a0-1615aa44b98d)
 
 ### Bước 2:
-Giải nén và mở **Word Scroll Machine.exe** trong thư mục **WSM**
+Tải bản installer:
 
-![File2](file2.png)
-![File3](file3.png)
+![image](https://github.com/user-attachments/assets/987aa1c1-d59c-4e68-ad6e-915ce2c3e0fd)
+
+### Bước 3:
+Làm theo các bước cài đặt và mở WSM trên Desktop
+
+![image](https://github.com/user-attachments/assets/df1a2215-2f3b-4bbd-a290-693623375835)
 
 Nếu có bất cứ lỗi nào, vào thư mục **_Redist**, cài đặt tất cả
 
 ![image](https://github.com/user-attachments/assets/d815664d-2c20-4ace-9bbd-fc8fb5e65622)
-
 
 ## Trong cửa sổ Control
 
