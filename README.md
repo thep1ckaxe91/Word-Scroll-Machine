@@ -12,10 +12,14 @@ Tải bản release mới nhất ở đây:
 ![File](file.png)
 
 ### Bước 2:
-Giải nén và mở **Word Scroll Machine.exe**
+Giải nén và mở **Word Scroll Machine.exe** trong thư mục **WSM**
 
 ![File2](file2.png)
 ![File3](file3.png)
+
+Nếu có bất cứ lỗi nào, vào thư mục **_Redist**, cài đặt tất cả
+![image](https://github.com/user-attachments/assets/d815664d-2c20-4ace-9bbd-fc8fb5e65622)
+
 
 ## Trong cửa sổ Control
 
