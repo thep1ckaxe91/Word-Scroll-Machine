@@ -15,6 +15,8 @@ Tải bản release mới nhất ở đây:
 ### Bước 2:
 Tải bản installer:
 
+![image](https://github.com/user-attachments/assets/9d041666-f01a-4127-b684-4334eb14f6fb)
+
 ![image](https://github.com/user-attachments/assets/987aa1c1-d59c-4e68-ad6e-915ce2c3e0fd)
 
 ### Bước 3:
